@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Storybook – A Year of Us</title>
+    
+    <!-- Import font dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Desain umum: Background gambar dari file Anda, adjustable untuk HP dan laptop */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-image: url('fotbar hitam putih.jpg'); /* Ganti dengan path file gambar Anda, misalnya 'images/bg.jpg' */
+            background-size: cover; /* Cover seluruh area tanpa distorsi, bisa terpotong untuk fit */
+            background-position: center; /* Posisi center untuk centering */
+            background-repeat: no-repeat; /* Tidak diulang */
+            background-attachment: fixed; /* Tetap saat scroll (opsional, bisa dihapus jika ingin scroll) */
+            color: #FFF8F8;
+            overflow-x: hidden;
+            animation: backgroundTwinkle 10s infinite ease-in-out;
+        }
+
+        @keyframes backgroundTwinkle {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        #slider {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            /* Hapus animasi pageFlip dan fadeIn untuk menghindari konflik dengan transition */
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 1;
+        }
+
+        .slide.inactive {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        @keyframes twinkle {
+            0% { text-shadow: 0 0 5px #F7B3D0; }
+            50% { text-shadow: 0 0 10px #F7B3D0, 0 0 15px #A4DDED; }
+            100% { text-shadow: 0 0 5px #F7B3D0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes floatEffect {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        .photo-item:nth-child(odd) {
+            animation: floatLeft 5s infinite ease-in-out;
+        }
+
+        .photo-item:nth-child(even) {
+            animation: floatRight 5s infinite ease-in-out;
+        }
+
+        @keyframes floatLeft {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(-5px) translateY(-5px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        @keyframes floatRight {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(5px) translateY(-5px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        /* Frame untuk foto: Ukuran landscape 20x15 (rasio 4:3), dengan border sebagai frame */
+        .photo-item {
+            width: 80%; /* Lebar 80% untuk responsivitas, tapi max-width untuk batas */
+            max-width: 800px; /* Lebar maksimal 800px (skala untuk 20x15 jika diperlukan) */
+            aspect-ratio: 4 / 3; /* Rasio landscape 20x15 */
+            margin: 10px;
+            background-size: cover;
+            background-position: center;
+            border: 10px solid #FFF; /* Frame putih tebal */
+            border-radius: 20px; /* Sudut bulat untuk efek frame */
+            box-shadow: 0 0 20px rgba(233, 30, 99, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.3); /* Bayangan luar dan inner untuk efek 3D */
+            animation: floatEffect 3s infinite ease-in-out; /* Efek mengambang */
+            position: relative;
+        }
+
+        /* Efek inner frame untuk kedalaman */
+        .photo-item::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            pointer-events: none;
+        }
+
+        button {
+            background: linear-gradient(45deg, #3498DB, #E91E63);
+            border-radius: 50px;
+            padding: 15px 30px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px #FFD700;
+        }
+
+        /* Tombol global prev dan next di bawah, sekarang dengan gaya sama seperti tombol open the book */
+        #prevBtn, #nextBtn {
+            position: absolute;
+            bottom: 20px;
+            background: linear-gradient(45deg, #3498DB, #E91E63); /* Gradient sama seperti tombol umum */
+            border: none;
+            font-size: 0.9em;
+            color: #fff; /* Warna teks putih untuk kontras */
+            padding: 10px 20px; /* Padding tetap kecil */
+            cursor: pointer;
+            border-radius: 50px;
+            transition: transform 0.3s, box-shadow 0.3s; /* Transition untuk hover */
+            font-family: 'Poppins', sans-serif;
+            z-index: 10;
+            animation: pulse 2s infinite ease-in-out; /* Animasi pulse sama */
+        }
+
+        #prevBtn {
+            left: 20px;
+        }
+
+        #nextBtn {
+            right: 20px;
+        }
+
+        #prevBtn:hover, #nextBtn:hover {
+            transform: scale(1.1); /* Hover scale sama */
+            box-shadow: 0 0 10px #FFD700; /* Hover shadow sama */
+        }
+
+        @media (max-width: 768px) {
+            .photo-item {
+                width: 90%; /* Lebih lebar di mobile */
+                max-width: none; /* Hapus max-width untuk fleksibilitas */
+            }
+            #prevBtn, #nextBtn {
+                font-size: 0.8em;
+                padding: 8px 15px;
+            }
+        }
+
+        #progress {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8em;
+            animation: twinkle 5s infinite;
+        }
+
+        /* Warna teks khusus untuk slide 1 (cover) diubah ke pink menyala */
+        #slide1 h1, #slide1 p {
+            color: #FF1493; /* Pink menyala (deep pink) */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Shadow hitam untuk kontras */
+        }
+    </style>
+</head>
+<body>
+    <!-- Elemen Audio Tersembunyi - Ganti 'path/to/your/song.mp3' dengan path file lagu Anda -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="Feast - Nina (Official Lyric Video) [iQo-8wx0l0Y].mp3" type="audio/mpeg">
+        <!-- Jika file MP3, gunakan type="audio/mpeg". Untuk format lain, sesuaikan. -->
+        <!-- Jika ingin URL online, ganti src dengan URL lagu. -->
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <div id="slider">
+        <!-- Slide 1: Cover Page (tanpa tombol prev/next) -->
+        <div class="slide active" id="slide1">
+            <h1 style="font-family: 'Dancing Script'; animation: twinkle 2s infinite;">A Massage — 1 Year Together<br>Teruntuk wanita hebat yang sudah menemaniku satu tahun ini</h1>
+            <p class="decoration-heart" style="animation: pulse 1.5s infinite;">💖</p>
+            <button onclick="openBookAndPlayMusic()">Open the book 💌</button>
+            <div id="progress">Page 1 of 21</div>
+        </div>
+
+        <!-- Slides 2-21: Isi dengan satu foto saja (sampel placeholder) -->
+        <div class="slide" id="slide2">
+            <div style="background-image: url('1_20251018_142651_0000.png');" class="photo-item"></div>
+            <div id="progress">Page 2 of 21</div>
+        </div>
+
+        <div class="slide" id="slide3">
+            <div style="background-image: url('2_20251018_142653_0001.png');" class="photo-item"></div>
+            <div id="progress">Page 3 of 21</div>
+        </div>
+
+        <!-- Lanjutkan untuk Slide 4 hingga Slide 21 -->
+        <div class="slide" id="slide4">
+            <div style="background-image: url('3_20251018_142653_0002.png');" class="photo-item"></div>
+            <div id="progress">Page 4 of 21</div>
+        </div>
+
+        <div class="slide" id="slide5">
+            <div style="background-image: url('4_20251018_142653_0003.png');" class="photo-item"></div>
+            <div id="progress">Page 5 of 21</div>
+        </div>
+
+        <div class="slide" id="slide6">
+            <div style="background-image: url('5_20251018_142653_0004.png');" class="photo-item"></div>
+            <div id="progress">Page 6 of 21</div>
+        </div>
+
+        <div class="slide" id="slide7">
+            <div style="background-image: url('6_20251018_142653_0005.png');" class="photo-item"></div>
+            <div id="progress">Page 7 of 21</div>
+        </div>
+
+        <div class="slide" id="slide8">
+            <div style="background-image: url('7_20251018_142653_0006.png');" class="photo-item"></div>
+            <div id="progress">Page 8 of 21</div>
+        </div>
+
+        <div class="slide" id="slide9">
+            <div style="background-image: url('8_20251018_142653_0007.png');" class="photo-item"></div>
+            <div id="progress">Page 9 of 21</div>
+        </div>
+
+        <div class="slide" id="slide10">
+            <div style="background-image: url('9_20251018_142653_0008.png');" class="photo-item"></div>
+            <div id="progress">Page 10 of 21</div>
+        </div>
+
+        <div class="slide" id="slide11">
+            <div style="background-image: url('10_20251018_142653_0009.png');" class="photo-item"></div>
+            <div id="progress">Page 11 of 21</div>
+        </div>
+
+        <div class="slide" id="slide12">
+            <div style="background-image: url('11_20251018_142653_0010.png');" class="photo-item"></div>
+            <div id="progress">Page 12 of 21</div>
+        </div>
+
+        <div class="slide" id="slide13">
+            <div style="background-image: url('12_20251018_142653_0011.png');" class="photo-item"></div>
+            <div id="progress">Page 13 of 21</div>
+        </div>
+
+        <div class="slide" id="slide14">
+            <div style="background-image: url('13_20251018_142654_0012.png');" class="photo-item"></div>
+            <div id="progress">Page 14 of 21</div>
+        </div>
+
+        <div class="slide" id="slide15">
+            <div style="background-image: url('14_20251018_142654_0013.png');" class="photo-item"></div>
+            <div id="progress">Page 15 of 21</div>
+        </div>
+
+        <div class="slide" id="slide16">
+            <div style="background-image: url('15_20251018_142654_0014.png');" class="photo-item"></div>
+            <div id="progress">Page 16 of 21</div>
+        </div>
+
+        <div class="slide" id="slide17">
+            <div style="background-image: url('16_20251018_142654_0015.png');" class="photo-item"></div>
+            <div id="progress">Page 17 of 21</div>
+        </div>
+
+        <div class="slide" id="slide18">
+            <div style="background-image: url('17_20251018_142654_0016.png');" class="photo-item"></div>
+            <div id="progress">Page 18 of 21</div>
+        </div>
+
+        <div class="slide" id="slide19">
+            <div style="background-image: url('18_20251018_142654_0017.png');" class="photo-item"></div>
+            <div id="progress">Page 19 of 21</div>
+        </div>
+
+        <div class="slide" id="slide20">
+            <div style="background-image: url('19_20251018_142654_0018.png');" class="photo-item"></div>
+            <div id="progress">Page 20 of 21</div>
+        </div>
+
+        <div class="slide" id="slide21">
+            <div style="background-image: url('fotbar hitam putih 2.jpg');" class="photo-item"></div>
+            <div id="progress">Page 21 of 21</div>
+        </div>
+    </div>
+
+    <!-- Tombol global prev dan next di bawah (hanya muncul di slide 2-21) -->
+    <button id="prevBtn" onclick="prevSlide()" style="display: none;">Previous</button>
+    <button id="nextBtn" onclick="nextSlide()" style="display: none;">Next</button>
+
+    <script>
+        let currentSlide = 1;
+        const audio = document.getElementById('backgroundMusic');
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            if (n > slides.length) n = slides.length;
+            if (n < 1) n = 1;
+            
+            // Buat slide lama inactive
+            document.getElementById('slide' + currentSlide).classList.remove('active');
+            document.getElementById('slide' + currentSlide).classList.add('inactive');
+
+            // Simpan slide baru
+            const newSlide = n;
+
+            // Gunakan setTimeout untuk menunda aktivasi slide baru hingga transisi selesai (0.5 detik)
+            setTimeout(() => {
+                currentSlide = newSlide;
+                document.getElementById('slide' + currentSlide).classList.remove('inactive');
+                document.getElementById('slide' + currentSlide).classList.add('active');
+
+                // Kontrol tombol dan musik
+                if (currentSlide === 1) {
+                    document.getElementById('prevBtn').style.display = 'none';
+                    document.getElementById('nextBtn').style.display = 'none';
+                    audio.pause();
+                } else {
+                    document.getElementById('prevBtn').style.display = 'block';
+                    document.getElementById('nextBtn').style.display = 'block';
+                    if (currentSlide >= 2 && audio.paused) {
+                        audio.play().catch(error => {
+                            console.log('Autoplay gagal: ', error);
+                        });
+                    }
+                }
+            }, 500); // Delay 500ms sesuai durasi transition
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Fungsi baru: Gabung pindah slide dan mulai musik
+        function openBookAndPlayMusic() {
+            showSlide(2); // Pindah ke slide 2
+            // Musik akan dimulai di dalam showSlide setelah delay
+        }
+
+        window.onload = function() { showSlide(1); };
+    </script>
+</body>
+</html>
